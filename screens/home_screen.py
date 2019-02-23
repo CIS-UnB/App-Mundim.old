@@ -29,8 +29,9 @@ Builder.load_string('''
     size_hint: 1, None
     height: int(dp(82.5))
     N4Label:
+        style: 'mont-title'
         text: 'Pacientes'
-        pos: dp(32), dp(53)
+        pos: dp(32), dp(50)
     N4Image:
         source: './assets/img/separator.png'
         height: 1

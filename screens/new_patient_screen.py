@@ -127,8 +127,9 @@ Builder.load_string('''
     size_hint: 1, None
     height: dp(82.5)
     N4Label:
+        style: 'mont-title'
         text: 'Novo Paciente'
-        pos: dp(55), dp(53)
+        pos: dp(55), dp(50)
     N4ImageButton:
         source: './assets/img/back_btn.png'
         pos: 0, root.height - self.height
