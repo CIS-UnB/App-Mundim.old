@@ -10,7 +10,7 @@ Builder.load_string('''
 <N4ImageButton>
     canvas.before:
         Color:
-            rgba: app.colors['red_test'] if root.debug else [0, 0, 0, 0]
+            rgba: app.colors['debug'] if root.debug else [0, 0, 0, 0]
         Rectangle:
             size: self.size
             pos: self.pos

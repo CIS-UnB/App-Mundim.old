@@ -19,18 +19,12 @@ if platform == 'linux' or platform == 'win':
 class Mundim(App):
     queue = []
     colors = DictProperty({
+        'black': hex_to_rgb('000000'),
         'white': hex_to_rgb('FFFFFF'),
-        'off_white': hex_to_rgb('fafafb'), # details color
-        'grey_1': hex_to_rgb('2e323d'), # menu color
-        'grey_2': hex_to_rgb('3b414c'), # topbar color
-        'grey_3': hex_to_rgb('474e59'), # topestbar color
-        'grey_4': hex_to_rgb('2E323D'),
-        'grey_5': hex_to_rgb('62656e'), # disabled color
-        'green_1': hex_to_rgb('48C136'),
-        'red_1': hex_to_rgb('C61033'),
-        'red_2': hex_to_rgb('E22727'),
-        'red_3': hex_to_rgb('FF2424'),
-        'red_test': hex_to_rgb('FF0000')[:3] + [0.1],
+        'off_white': hex_to_rgb('F3F3F3'), # details color
+        'blue_1': hex_to_rgb('73B9E8'), # menu color
+        'green_1': hex_to_rgb('73E89A'), # topbar color
+        'debug': hex_to_rgb('FF0000')[:3] + [0.1],
     })
 
     def hook_keyboard(self, window, key, *largs):
