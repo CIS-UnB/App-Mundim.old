@@ -21,9 +21,9 @@ class Mundim(App):
     colors = DictProperty({
         'black': hex_to_rgb('000000'),
         'white': hex_to_rgb('FFFFFF'),
-        'off_white': hex_to_rgb('F3F3F3'), # details color
-        'blue_1': hex_to_rgb('73B9E8'), # menu color
-        'green_1': hex_to_rgb('73E89A'), # topbar color
+        'off_white': hex_to_rgb('F3F3F3'),
+        'blue_1': hex_to_rgb('73B9E8'),
+        'green_1': hex_to_rgb('73E89A'),
         'debug': hex_to_rgb('FF0000')[:3] + [0.1],
     })
 
