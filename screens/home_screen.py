@@ -5,13 +5,21 @@ from kivy.uix.screenmanager import Screen
 
 Builder.load_string('''
 <HomeScreen>
-    TopBar:
+    canvas:
+        Color:
+            rgba: app.colors['off_white']
+        Rectangle:
+            size: self.size
+            pos: 0, 0
+    HomeScreenTopBar:
         pos: 0, root.height - self.height
     N4ImageButton:
         source: './assets/img/add_patient_btn.png'
-        pos: root.width - self.width - dp(35), dp(25) 
+        pos: root.width - self.width - dp(35), dp(25)
+        on_press:
+            app.root.change_screen('new_patient_screen')
 
-<TopBar@RelativeLayout>
+<HomeScreenTopBar@RelativeLayout>
     canvas:
         Color:
             rgba: app.colors['white']
@@ -19,12 +27,13 @@ Builder.load_string('''
             size: self.size
             pos: 0, 0
     size_hint: 1, None
-    height: dp(82.5)
+    height: int(dp(82.5))
     N4Label:
         text: 'Pacientes'
         pos: dp(32), dp(53)
     N4Image:
         source: './assets/img/separator.png'
+        height: 1
     N4Button:
         id: todos_btn
         text: 'Todos'
@@ -40,7 +49,7 @@ Builder.load_string('''
         height: dp(33.5)
         halign: 'center'
         pos: todos_btn.width, 0
-    N4Image:
+    N4ImageButton:
         pos: root.width - self.width, root.height - self.height
         source: './assets/img/dots.png'
 ''')
