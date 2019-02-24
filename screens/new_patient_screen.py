@@ -39,6 +39,14 @@ Builder.load_string('''
             N4ImageButton:
                 debug: True
                 source: './assets/img/send_data_btn.png'
+                on_press:
+                    nome_txt.text = ''
+                    idade_txt.text = ''
+                    sobrenome_txt.text = ''
+                    diagnostico_txt.text = ''
+                    app.root.change_screen('home_screen', \
+                        direction='right', \
+                        queue_enabled=False)
             N4TextInput:
                 id: nome_txt
                 hint_text: 'NOME'
