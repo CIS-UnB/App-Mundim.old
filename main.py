@@ -13,7 +13,8 @@ from widgets.n4button import N4Button
 from widgets.n4image import N4Image
 from widgets.n4imagebutton import N4ImageButton
 from root import MundimRoot
-from utils import hex_to_rgb
+from kivy.utils import platform
+from utils import hex_to_rgb, set_statusbar_color
 
 class Mundim(App):
     colors = DictProperty({
@@ -28,6 +29,8 @@ class Mundim(App):
     def on_start(self):
         from kivy.base import EventLoop
         EventLoop.window.bind(on_keyboard=self.hook_keyboard)
+        if platform == 'android':
+            set_statusbar_color('#FFFFFF')
 
     def hook_keyboard(self, window, key, *largs):
         if key == 27:

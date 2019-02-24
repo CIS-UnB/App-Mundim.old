@@ -11,8 +11,9 @@ Builder.load_string('''
     size_hint: None, None
     size: dp(290), dp(44)
     font_name: './assets/fonts/Montserrat-Regular.ttf' if self.text != '' else \
-        './assets/fonts/Montserrat-SemiBold.ttf'
-    font_size: dp(11) if self.text != '' else dp(10)
+        './assets/fonts/Montserrat-Medium.ttf'
+    font_size: dp(11) if self.text != '' else dp(9)
+    use_bubble: False
     foreground_color: [0, 0, 0, 1]
     cursor_color: [0, 0, 0, 1]
     padding_x: dp(20)

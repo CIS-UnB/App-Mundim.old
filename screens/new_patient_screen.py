@@ -67,6 +67,8 @@ Builder.load_string('''
 
 
 <Overlay@RelativeLayout>
+    square_size: dp(150)
+    y_offset: dp(50)
     Widget:
         canvas:
             Color:
@@ -75,8 +77,8 @@ Builder.load_string('''
                 size: self.size
                 pos: self.pos
         size_hint: None, None
-        size: (root.width - 200) / 2, 200
-        pos: 0, (root.height - 200) / 2 + 100
+        size: (root.width - root.square_size) / 2, root.square_size
+        pos: 0, (root.height - root.square_size) / 2 + root.y_offset
     Widget:
         canvas:
             Color:
@@ -85,8 +87,8 @@ Builder.load_string('''
                 size: self.size
                 pos: self.pos
         size_hint: 1, None
-        height: (root.height - 200) / 2
-        y: (root.height - 200) / 2 + 300
+        height: (root.height - root.square_size) / 2
+        y: (root.height - root.square_size) / 2 + root.square_size + root.y_offset
     Widget:
         canvas:
             Color:
@@ -95,8 +97,8 @@ Builder.load_string('''
                 size: self.size
                 pos: self.pos
         size_hint: None, None
-        size: (root.width - 200) / 2, 200
-        pos: (root.width - 200) / 2 + 201, (root.height - 200) / 2 + 100
+        size: (root.width - root.square_size) / 2, root.square_size
+        pos: (root.width - root.square_size) / 2 + root.square_size + 1, (root.height - root.square_size) / 2 + root.y_offset
     Widget:
         canvas:
             Color:
@@ -105,7 +107,7 @@ Builder.load_string('''
                 size: self.size
                 pos: self.pos
         size_hint: 1, None
-        height: (root.height - 200) / 2 + 100
+        height: (root.height - root.square_size) / 2 + root.y_offset
 
 
     Widget:
@@ -117,7 +119,7 @@ Builder.load_string('''
                 pos: self.pos
         size_hint: None, 1
         width: 1
-        x: int((root.width - 200) / 2 + 200)
+        x: int((root.width - root.square_size) / 2 + root.square_size)
     Widget:
         canvas:
             Color:
@@ -127,7 +129,7 @@ Builder.load_string('''
                 pos: self.pos
         size_hint: 1, None
         height: 1
-        y: int((root.height - 200) / 2 + 200) + 100
+        y: int((root.height - root.square_size) / 2 + root.square_size) + root.y_offset
     Widget:
         canvas:
             Color:
@@ -137,7 +139,7 @@ Builder.load_string('''
                 pos: self.pos
         size_hint: None, 1
         width: 1
-        x: int((root.width - 200) / 2)
+        x: int((root.width - root.square_size) / 2)
     Widget:
         canvas:
             Color:
@@ -147,7 +149,7 @@ Builder.load_string('''
                 pos: self.pos
         size_hint: 1, None
         height: 1
-        y: int((root.height - 200) / 2) + 100
+        y: int((root.height - root.square_size) / 2) + root.y_offset
 
 <NewPatientScreenTopBar@RelativeLayout>
     canvas:
@@ -157,16 +159,18 @@ Builder.load_string('''
             size: self.size
             pos: 0, 0
     size_hint: 1, None
-    height: dp(82.5)
+    height: dp(72)
     N4Label:
+        id: title
         style: 'mont-title'
         text: 'Novo Paciente'
         pos: dp(55), dp(50)
     N4ImageButton:
         source: './assets/img/back_btn.png'
-        pos: 0, root.height - self.height
+        center_y: title.center_y
         on_press:
             app.root.undo()
+            amostragem_btn._do_press()
     N4Button:
         id: amostragem_btn
         text: 'Amostragem'
@@ -177,8 +181,11 @@ Builder.load_string('''
         x: dp(10)
         padding_x: dp(45)
         on_press:
-            app.root.change_screen('amostragem_screen', direction='right', transition='slide', screen_manager=app.root.ids.new_patient_screen.ids.screen_manager)
-
+            app.root.change_screen('amostragem_screen', \
+                direction='right', \
+                transition='slide', \
+                queue_enabled=False, \
+                screen_manager=app.root.ids.new_patient_screen.ids.screen_manager)
     N4Button:
         id: outros_dados_btn
         text: 'Outros Dados'
@@ -188,9 +195,13 @@ Builder.load_string('''
         halign: 'center'
         pos: amostragem_btn.width, 0
         on_press:
-            app.root.change_screen('outros_dados_screen', transition='slide', screen_manager=app.root.ids.new_patient_screen.ids.screen_manager)
+            app.root.change_screen('outros_dados_screen', \
+                transition='slide', \
+                queue_enabled=False, \
+                screen_manager=app.root.ids.new_patient_screen.ids.screen_manager)
     N4Image:
-        source: './assets/img/separator.png'
+        source: './assets/img/separator_2.png'
+        size_hint_x: 1
         height: 1
 ''')
 

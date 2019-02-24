@@ -27,13 +27,15 @@ Builder.load_string('''
             size: self.size
             pos: 0, 0
     size_hint: 1, None
-    height: int(dp(82.5))
+    height: int(dp(72))
     N4Label:
+        id: title
         style: 'mont-title'
         text: 'Pacientes'
         pos: dp(32), dp(50)
     N4Image:
-        source: './assets/img/separator.png'
+        source: './assets/img/separator_2.png'
+        size_hint_x: 1
         height: 1
     N4Button:
         id: todos_btn
@@ -51,7 +53,8 @@ Builder.load_string('''
         halign: 'center'
         pos: todos_btn.width, 0
     N4ImageButton:
-        pos: root.width - self.width, root.height - self.height
+        x: root.width - self.width
+        center_y: title.center_y
         source: './assets/img/dots.png'
 ''')
 
