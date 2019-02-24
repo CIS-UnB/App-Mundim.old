@@ -7,14 +7,12 @@ from kivy.app import App
 from kivy.base import EventLoop
 from kivy.properties import DictProperty
 
+from widgets.n4label import N4Label
+from widgets.n4button import N4Button
+from widgets.n4image import N4Image
+from widgets.n4imagebutton import N4ImageButton
 from root import MundimRoot
 from utils import hex_to_rgb
-
-from kivy.utils import platform
-from kivy.config import Config
-if platform == 'linux' or platform == 'win':
-    Config.set('graphics', 'width', '480')
-    Config.set('graphics', 'height', '986')
 
 class Mundim(App):
     queue = []

@@ -3,7 +3,8 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.label import Label
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, BooleanProperty
+from kivy.metrics import sp
 Builder.load_string('''
 <N4Label>
     canvas.before:
@@ -14,9 +15,8 @@ Builder.load_string('''
             pos: self.pos
     size_hint: None, None
     size: self.texture_size if self.opacity > 0 else (0, 0)
-    style: 'title'
     font: './assets/fonts/' + root.font_name
-    color: app.colors['white'] if root.enabled else app.colors['grey_5']
+    color: app.colors['black']
     canvas:
         Color:
             rgba: 0, 0, 0, 0
@@ -27,21 +27,21 @@ Builder.load_string('''
 
 class N4Label(Label):
     debug = BooleanProperty(False)
-    style = StringProperty('body')
+    style = StringProperty('mont-body')
     font_name = StringProperty('Montserrat-Regular.ttf')
 
     styles = {
         'mont-title':{
             'font_name': 'Montserrat-Regular.ttf',
-            'font_size': 55,
+            'font_size': sp(13.75),
         },
         'mont-body-selected':{
             'font_name': 'Montserrat-SemiBold.ttf',
-            'font_size': 45,
+            'font_size': sp(11.25),
         },
         'mont-body':{
             'font_name': 'Montserrat-Regular.ttf',
-            'font_size': 45,
+            'font_size': sp(11.25),
         },
     }
 

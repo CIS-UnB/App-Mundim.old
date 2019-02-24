@@ -14,7 +14,7 @@ Builder.load_string('''
         Rectangle:
             size: self.size
             pos: self.pos
-    style: 'body'
+    style: 'mont-body'
     size_hint: None, None
     valign: 'center'
     halign: 'center'
@@ -27,3 +27,7 @@ class N4Button(ButtonBehavior, N4Label):
 
     def __init__(self, **kw):
         super(N4Button, self).__init__(**kw)
+
+    def on_press(self):
+        if self.debug:
+            print 'PRESSED', self.text
