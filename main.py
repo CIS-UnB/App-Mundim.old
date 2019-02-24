@@ -15,7 +15,6 @@ from root import MundimRoot
 from utils import hex_to_rgb
 
 class Mundim(App):
-    queue = []
     colors = DictProperty({
         'black': hex_to_rgb('000000'),
         'white': hex_to_rgb('FFFFFF'),
@@ -25,11 +24,14 @@ class Mundim(App):
         'debug': hex_to_rgb('FF0000')[:3] + [0.1],
     })
 
+    def on_start(self):
+        from kivy.base import EventLoop
+        EventLoop.window.bind(on_keyboard=self.hook_keyboard)
+
     def hook_keyboard(self, window, key, *largs):
         if key == 27:
-            if len(self.queue) > 0:
-                self.back()
-        return True
+            self.root.undo()
+            return True
 
     def build(self):
         self.root = MundimRoot()

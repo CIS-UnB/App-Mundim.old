@@ -20,3 +20,7 @@ class N4ImageButton(ButtonBehavior, N4Image):
     debug = BooleanProperty(False)
     def __init__(self, **kw):
         super(N4ImageButton, self).__init__(**kw)
+
+    def on_press(self):
+        if self.debug:
+            print 'PRESSED', self.source

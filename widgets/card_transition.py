@@ -6,9 +6,9 @@ from kivy.animation import AnimationTransition
 class CardTransition(SlideTransition):
     mode = OptionProperty('push', options=['pop', 'push'])
     duration = 0.7
-    
+
     def on_pause(self):
-        return True    
+        return True
 
     def on_resume(self):
         pass
@@ -32,12 +32,12 @@ class CardTransition(SlideTransition):
         b = self.screen_out
         # ensure that the correct widget is "on top"
         if mode == 'push':
-            manager.canvas.remove(a.canvas)
             manager.canvas.add(manager.c)
+            manager.canvas.remove(a.canvas)
             manager.canvas.add(a.canvas)
         elif mode == 'pop':
-            manager.canvas.remove(b.canvas)
             manager.canvas.add(manager.c)
+            manager.canvas.remove(b.canvas)
             manager.canvas.add(b.canvas)
 
     def on_progress(self, progression):
@@ -50,30 +50,31 @@ class CardTransition(SlideTransition):
         mode = self.mode
         al = AnimationTransition.out_cubic
         progression = al(progression)
+        if progression == 1:
+            if hasattr(self.manager, 'c'):
+                self.manager.canvas.remove(self.manager.c)
+            return
 
         self.screen_in.opacity = 1
         if mode == 'push':
             manager.c.opacity = progression
             if direction == 'left':
-                b.pos =  x - progression * width / 7.0, y 
-                a.pos = x + width * (1 - progression), y
+                b.pos =  int(x - progression * width / 7.0), int(y)
+                a.pos = int(x + width * (1 - progression)), int(y)
             elif direction == 'right':
-                b.pos =  x + progression * width / 7.0, y 
-                a.pos = x - width * (1 - progression), y
+                b.pos =  int(x + progression * width / 7.0), int(y)
+                a.pos = int(x - width * (1 - progression)), int(y)
             elif direction == 'down':
-                a.pos = x, y + height * (1 - progression)
+                a.pos = int(x), int(y + height * (1 - progression))
             elif direction == 'up':
-                a.pos = x, y - height * (1 - progression)
+                a.pos = int(x), int(y - height * (1 - progression))
         elif mode == 'pop':
             a.pos = x, y
             if direction == 'left':
-                b.pos = x - width * progression, y
+                b.pos = int(x - width * progression), int(y)
             elif direction == 'right':
-                b.pos = x + width * progression, y
+                b.pos = int(x + width * progression), int(y)
             elif direction == 'down':
-                b.pos = x, y - height * progression
+                b.pos = int(x), int(y - height * progression)
             elif direction == 'up':
-                b.pos = x, y + height * progression
-
-        a.canvas.ask_update()
-        b.canvas.ask_update()
+                b.pos = int(x), int(y + height * progression)
