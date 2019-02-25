@@ -7,6 +7,7 @@ from kivy.uix.screenmanager import SlideTransition
 from screens.home_screen import HomeScreen
 from screens.new_patient_screen import NewPatientScreen
 from widgets.card_transition import CardTransition
+from kivy.clock import Clock
 from functools import partial
 import time
 Builder.load_string('''
@@ -35,10 +36,21 @@ class MundimRoot(RelativeLayout):
     def __init__(self, **kw):
         super(MundimRoot, self).__init__(**kw)
 
-    def change_screen(self, target, direction='left', transition='card', queue_enabled=True, screen_manager=None):
-        app = App.get_running_app()
+    def change_screen(self, target, delay=0, direction='left', transition='card', queue_enabled=True, screen_manager=None):
         if not screen_manager:
-            screen_manager = app.root.ids.screen_manager
+            screen_manager = self.ids.screen_manager
+
+        if delay > 0:
+            Clock.schedule_once(
+                lambda item: self.change_screen(
+                    target,
+                    direction=direction,
+                    transition=transition,
+                    queue_enabled=queue_enabled,
+                    screen_manager=screen_manager,
+                ), delay
+            )
+            return
 
         if target == screen_manager.current:
             self.undo()
@@ -49,7 +61,7 @@ class MundimRoot(RelativeLayout):
             self.add_to_queue(
                 'Undo screen change. {} -> {}'.format(target, screen_manager.current),
                 partial(
-                    app.root.change_screen,
+                    self.change_screen,
                     screen_manager.current,
                     direction=new_direction,
                     transition=transition,
