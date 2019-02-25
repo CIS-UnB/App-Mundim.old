@@ -9,9 +9,9 @@ from kivy.properties import DictProperty
 
 from widgets.n4textinput import N4TextInput
 from widgets.n4label import N4Label
-from widgets.n4button import N4Button
+from widgets.n4button import N4Button, RippledN4Button
 from widgets.n4image import N4Image
-from widgets.n4imagebutton import N4ImageButton
+from widgets.n4imagebutton import N4ImageButton, RippledImageButton
 from root import MundimRoot
 from kivy.utils import platform
 from utils import hex_to_rgb, set_statusbar_color

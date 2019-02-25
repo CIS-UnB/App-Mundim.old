@@ -15,29 +15,29 @@ to add a touch ripple visual effect known from `Google Material Design
 For an overview of behaviors, please refer to the :mod:`~kivy.uix.behaviors`
 documentation.
 
-The class :class:`~kivy.uix.behaviors.touchripple.RippleBehavior` provides
+The class :class:`~kivy.uix.behaviors.touchripple.TouchRippleBehavior` provides
 rendering the ripple animation.
 
-The class :class:`~kivy.uix.behaviors.touchripple.RippleButtonBehavior`
+The class :class:`~kivy.uix.behaviors.touchripple.TouchRippleButtonBehavior`
 basically provides the same functionality as
 :class:`~kivy.uix.behaviors.button.ButtonBehavior` but rendering the ripple
 animation instead of default press/release visualization.
 '''
 from kivy.animation import Animation
 from kivy.clock import Clock
-from kivy.graphics import Canvas, CanvasBase, Color, Ellipse, Rectangle, ScissorPush, ScissorPop
+from kivy.graphics import CanvasBase, Color, Ellipse, ScissorPush, ScissorPop
 from kivy.properties import BooleanProperty, ListProperty, NumericProperty, \
     ObjectProperty, StringProperty
 from kivy.uix.relativelayout import RelativeLayout
 
 
 __all__ = (
-    'RippleBehavior',
-    'RippleButtonBehavior'
+    'TouchRippleBehavior',
+    'TouchRippleButtonBehavior'
 )
 
 
-class RippleBehavior(object):
+class TouchRippleBehavior(object):
     '''Touch ripple behavior.
 
     Supposed to be used as mixin on widget classes.
@@ -51,7 +51,7 @@ class RippleBehavior(object):
     Here we create a Label which renders the touch ripple animation on
     interaction::
 
-        class RippleLabel(RippleBehavior, Label):
+        class RippleLabel(TouchRippleBehavior, Label):
 
             def __init__(self, **kwargs):
                 super(RippleLabel, self).__init__(**kwargs)
@@ -86,7 +86,7 @@ class RippleBehavior(object):
     and defaults to `0.5`.
     '''
 
-    ripple_duration_out = NumericProperty(.2)
+    ripple_duration_out = NumericProperty(.5)
     '''Animation duration taken to fade the overlay.
 
     :attr:`ripple_duration_out` is a :class:`~kivy.properties.NumericProperty`
@@ -115,7 +115,7 @@ class RippleBehavior(object):
     and defaults to `2.0`.
     '''
 
-    ripple_func_in = StringProperty('out_quad')
+    ripple_func_in = StringProperty('out_back')
     '''Animation callback for showing the overlay.
 
     :attr:`ripple_func_in` is a :class:`~kivy.properties.StringProperty`
@@ -131,25 +131,17 @@ class RippleBehavior(object):
 
     ripple_rad = NumericProperty(10)
     ripple_pos = ListProperty([0, 0])
-    ripple_color = ListProperty((0.85, 0.85, 0.85, .5))
-    ripple_bg_color = ListProperty((0.92, 0.92, 0.92, .5))
+    init_pos = ListProperty([0, 0])
+    ripple_color = ListProperty((1., 1., 1., .5))
 
     lower_ripple_completed = BooleanProperty(True)
     upper_ripple_completed = BooleanProperty(False)
-    ciripple_bg_color_fixedular_ripple = NumericProperty(0)
-    ripple_center = ListProperty([])
     circular_ripple = NumericProperty(0)
-    def __init__(self, **kwargs):
-        super(RippleBehavior, self).__init__(**kwargs)
-        self.ripple_pane_bg = Canvas()
-        self.canvas.add(self.ripple_pane_bg)
-        self.bind(
-            ripple_bg_color=self._ripple_set_bg_color,
-        )
-        self.ripple_rectangle = None
-        self.ripple_bg_color_instruction = None
+    ripple_center = ListProperty([])
 
-        self.ripple_pane = Canvas()
+    def __init__(self, **kwargs):
+        super(TouchRippleBehavior, self).__init__(**kwargs)
+        self.ripple_pane = CanvasBase()
         self.canvas.add(self.ripple_pane)
         self.bind(
             ripple_color=self._ripple_set_color,
@@ -159,32 +151,19 @@ class RippleBehavior(object):
         self.ripple_ellipse = None
         self.ripple_col_instruction = None
 
-        self.execution_index = 1
-
     def ripple_show(self, touch):
         '''Begin ripple animation on current widget.
 
         Expects touch event as argument.
         '''
-        Animation.cancel_all(self, 'ripple_rad', 'ripple_bg_color', 'ripple_color')
-        self.execution_index += 1
+        self.init_pos = self.to_window(*self.pos)
+        print self.init_pos
+        Animation.cancel_all(self, 'ripple_rad', 'ripple_color')
         self._ripple_reset_pane()
         x, y = self.to_window(*self.pos)
-
-        ripple_bg_color_fixed = self.ripple_bg_color
-        self.ripple_bg_color = [ripple_bg_color_fixed[0], ripple_bg_color_fixed[1], ripple_bg_color_fixed[2], self.ripple_fade_from_alpha]
-
-        if not self.circular_ripple:
-            with self.ripple_pane_bg.before:
-                self.ripple_bg_color_instruction = Color(rgba=self.ripple_bg_color)
-                self.ripple_rectangle = Rectangle(
-                    size=self.size,
-                    pos=self.pos,
-                )
-
         width, height = self.size
         if isinstance(self, RelativeLayout):
-            self.ripple_pos = ripple_pos = (touch.x - x, touch.y - y)
+            self.ripple_pos = ripple_pos = (touch.x - self.pos[0], touch.y - self.pos[1])
         else:
             self.ripple_pos = ripple_pos = (touch.x, touch.y)
         if self.circular_ripple:
@@ -192,20 +171,20 @@ class RippleBehavior(object):
         rc = self.ripple_color
         ripple_rad = self.ripple_rad
         self.ripple_color = [rc[0], rc[1], rc[2], self.ripple_fade_from_alpha]
-        with self.ripple_pane.before:
+        with self.ripple_pane:
             if not self.circular_ripple:
                 self.sp = ScissorPush(
-                    x=int(round(x)),
-                    y=int(round(y)),
-                    width=int(round(width)),
-                    height=int(round(height))
+                    x=round(x),
+                    y=round(y),
+                    width=round(width),
+                    height=round(height)
                 )
             self.ripple_col_instruction = Color(rgba=self.ripple_color)
             self.ripple_ellipse = Ellipse(
                 size=(ripple_rad, ripple_rad),
                 pos=(
-                        ripple_pos[0] - ripple_rad / 2.,
-                        ripple_pos[1] - ripple_rad / 2.
+                    ripple_pos[0] - ripple_rad / 2.,
+                    ripple_pos[1] - ripple_rad / 2.
                 )
             )
             if not self.circular_ripple:
@@ -213,37 +192,25 @@ class RippleBehavior(object):
 
         self.ripple_scale = self.circular_ripple if self.circular_ripple else self.ripple_scale
         anim = Animation(
+            ripple_rad=max(width, height) * self.ripple_scale,
             t=self.ripple_func_in,
             ripple_color=[rc[0], rc[1], rc[2], self.ripple_fade_to_alpha],
-            ripple_bg_color=[ripple_bg_color_fixed[0], ripple_bg_color_fixed[1], ripple_bg_color_fixed[2], self.ripple_fade_to_alpha],
-            duration=self.ripple_duration_in,
+            duration=self.ripple_duration_in
         )
-
-        ripple_rad = max(width, height)/1.62 if not self.circular_ripple else max(width, height) * self.ripple_scale
-        radii_animation = Animation(
-            ripple_rad=ripple_rad,
-            t='out_expo',
-            duration=self.ripple_duration_in + self.ripple_duration_out,
-        )
-        radii_animation.start(self)
         anim.start(self)
-        ei = self.execution_index
-        fade = lambda s: self.ripple_fade(ei)
 
-    def ripple_fade(self, index=0):
+    def ripple_fade(self):
         '''Finish ripple animation on current widget.
         '''
-        if self.execution_index != index and index > 0:
-            return
-
-        Animation.cancel_all(self, 'ripple_bg_color', 'ripple_color')
-        ripple_bg_color_fixed = self.ripple_bg_color
+        Animation.cancel_all(self, 'ripple_rad', 'ripple_color')
+        width, height = self.size
         rc = self.ripple_color
+        duration = self.ripple_duration_out
         anim = Animation(
+            ripple_rad=max(width, height) * self.ripple_scale,
             ripple_color=[rc[0], rc[1], rc[2], 0.],
-            ripple_bg_color=[ripple_bg_color_fixed[0], ripple_bg_color_fixed[1], ripple_bg_color_fixed[2], 0.],
             t=self.ripple_func_out,
-            duration=self.ripple_duration_out,
+            duration=duration
         )
         anim.bind(on_complete=self._ripple_anim_complete)
         anim.start(self)
@@ -257,7 +224,7 @@ class RippleBehavior(object):
         if not self.circular_ripple:
             self.sp.x = x
             self.sp.y = y
-        ripple_pos = self.ripple_pos
+        ripple_pos = self.ripple_pos[0], self.ripple_pos[1]
         ripple_rad = self.ripple_rad
         m = max(width, height)
         cr = self.circular_ripple**2
@@ -282,29 +249,15 @@ class RippleBehavior(object):
             self.lower_ripple_completed = False
 
 
-    def _ripple_set_bg_color(self, instance, value):
-        if not self.ripple_bg_color_instruction:
-            return
-        self.ripple_bg_color_instruction.rgba = value
-        if self.ripple_bg_color[:3]+[0] == value:
-            self.lower_ripple_completed = True
-        elif self.ripple_bg_color[:3]+[self.ripple_fade_to_alpha] == value:
-            self.upper_ripple_completed = True
-        else:
-            self.upper_ripple_completed = False
-            self.lower_ripple_completed = False
-
-
     def _ripple_anim_complete(self, anim, instance):
         self._ripple_reset_pane()
 
     def _ripple_reset_pane(self):
         self.ripple_rad = self.ripple_rad_default
-        self.ripple_pane.before.clear()
-        self.ripple_pane_bg.before.clear()
+        self.ripple_pane.clear()
 
 
-class RippleButtonBehavior(RippleBehavior):
+class TouchRippleButtonBehavior(TouchRippleBehavior):
     '''
     This `mixin <https://en.wikipedia.org/wiki/Mixin>`_ class provides
     a similar behavior to :class:`~kivy.uix.behaviors.button.ButtonBehavior`
@@ -339,10 +292,10 @@ class RippleButtonBehavior(RippleBehavior):
     def __init__(self, **kwargs):
         self.register_event_type('on_press')
         self.register_event_type('on_release')
-        super(RippleButtonBehavior, self).__init__(**kwargs)
+        super(TouchRippleButtonBehavior, self).__init__(**kwargs)
 
     def on_touch_down(self, touch):
-        if super(RippleButtonBehavior, self).on_touch_down(touch):
+        if super(TouchRippleButtonBehavior, self).on_touch_down(touch):
             return True
         if touch.is_mouse_scrolling:
             return False
@@ -360,25 +313,25 @@ class RippleButtonBehavior(RippleBehavior):
     def on_touch_move(self, touch):
         if touch.grab_current is self:
             return True
-        if super(RippleButtonBehavior, self).on_touch_move(touch):
+        if super(TouchRippleButtonBehavior, self).on_touch_move(touch):
             return True
         return self in touch.ud
 
     def on_touch_up(self, touch):
-        self.ripple_fade()
         if touch.grab_current is not self:
-            return super(RippleButtonBehavior, self).on_touch_up(touch)
+            return super(TouchRippleButtonBehavior, self).on_touch_up(touch)
         assert(self in touch.ud)
         touch.ungrab(self)
         self.last_touch = touch
         if self.disabled:
             return
+        self.ripple_fade()
         if not self.always_release and not self.collide_point(*touch.pos):
             return
+
         # defer on_release until ripple_fade has completed
         def defer_release(dt):
-            if self.collide_point(touch.x, touch.y):
-                self.dispatch('on_release')
+            self.dispatch('on_release')
         Clock.schedule_once(defer_release, self.ripple_duration_out)
         return True
 
@@ -386,7 +339,7 @@ class RippleButtonBehavior(RippleBehavior):
         # ensure ripple animation completes if disabled gets set to True
         if value:
             self.ripple_fade()
-        return super(RippleButtonBehavior, self).on_disabled(
+        return super(TouchRippleButtonBehavior, self).on_disabled(
             instance, value)
 
     def on_press(self):

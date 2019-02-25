@@ -26,7 +26,7 @@ Builder.load_string('''
                 top_bar.ids.outros_dados_btn.style = 'mont-body'
             Overlay:
                 size_hint: 1, 1
-            N4ImageButton:
+            RippledImageButton:
                 source: './assets/img/take_photo_btn.png'
                 center_x: self.parent.center_x
                 y: dp(25)
@@ -178,8 +178,12 @@ Builder.load_string('''
         center_y: title.center_y
         on_press:
             app.root.undo()
-            amostragem_btn._do_press()
-    N4Button:
+            app.root.change_screen('amostragem_screen', \
+                direction='right', \
+                transition='slide', \
+                queue_enabled=False, \
+                screen_manager=app.root.ids.new_patient_screen.ids.screen_manager)
+    RippledN4Button:
         id: amostragem_btn
         text: 'Amostragem'
         style: 'mont-body-selected'
@@ -194,7 +198,7 @@ Builder.load_string('''
                 transition='slide', \
                 queue_enabled=False, \
                 screen_manager=app.root.ids.new_patient_screen.ids.screen_manager)
-    N4Button:
+    RippledN4Button:
         id: outros_dados_btn
         text: 'Outros Dados'
         style: 'mont-body'

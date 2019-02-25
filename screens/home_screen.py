@@ -62,7 +62,7 @@ Builder.load_string('''
         source: './assets/img/separator_2.png'
         size_hint_x: 1
         height: 1
-    N4Button:
+    RippledN4Button:
         id: todos_btn
         text: 'Todos'
         style: 'mont-body-selected'
@@ -76,7 +76,7 @@ Builder.load_string('''
                 transition='slide', \
                 queue_enabled=False, \
                 screen_manager=app.root.ids.home_screen.ids.screen_manager)
-    N4Button:
+    RippledN4Button:
         id: sem_prognostico_btn
         text: 'Sem Prognóstico'
         style: 'mont-body'
@@ -89,7 +89,8 @@ Builder.load_string('''
                 transition='slide', \
                 queue_enabled=False, \
                 screen_manager=app.root.ids.home_screen.ids.screen_manager)
-    N4ImageButton:
+    RippledImageButton:
+        ripple_rad_default: 0
         x: root.width - self.width
         center_y: title.center_y
         source: './assets/img/dots.png'
