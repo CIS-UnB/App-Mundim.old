@@ -15,12 +15,12 @@ Builder.load_string('''
     size_hint: None, None
     size: dp(300), dp(50)
     N4Image:
-        source: './assets/img/separator.png'
+        source: './assets/img/separator_2.png'
         size_hint_x: 1
         height: 1
         y: root.height - 1
     N4Image:
-        source: './assets/img/separator.png'
+        source: './assets/img/separator_2.png'
         size_hint_x: 1
         height: 1
         y: 0
@@ -28,14 +28,13 @@ Builder.load_string('''
         id: diagnostic_img
         source: './assets/img/diagnostic_sent.png' if root.diagnostic != '' else \
             './assets/img/diagnostic_unsent.png'
-        center_y: root.center_y
-        x: dp(11)
+        pos: dp(11), root.height / 2.0 - self.height / 2.0
     N4Label:
-        text: root.name
+        text: root.name + ' ' + root.surname
         pos: dp(45), root.height / 2.0 - self.height / 2.0
     N4Label:
         text: root.creation_hour
-        pos: root.width - self.width - dp(11), root.height / 2.0 - self.height / 2.0
+        pos: root.width - self.width - dp(20), root.height / 2.0 - self.height / 2.0
 ''')
 
 class Patient(RelativeLayout):
@@ -56,4 +55,4 @@ class Patient(RelativeLayout):
         self.creation_hour = self.get_creation_hour()
 
     def get_creation_hour(self):
-        return datetime.datetime.strptime(self.date_of_creation, '%Y-%m-%d %H:%M:%S').strftime('%H:%M')
+        return datetime.datetime.strptime(self.date_of_creation, '%Y-%m-%d %H:%M:%S').strftime('%d/%m, %H:%M')

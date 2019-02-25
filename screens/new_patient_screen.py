@@ -1,7 +1,10 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
+from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
+from server_manager import execute_query
+from kivy.metrics import dp
 
 Builder.load_string('''
 <NewPatientScreen>
@@ -40,10 +43,7 @@ Builder.load_string('''
                 debug: True
                 source: './assets/img/send_data_btn.png'
                 on_press:
-                    nome_txt.text = ''
-                    idade_txt.text = ''
-                    sobrenome_txt.text = ''
-                    diagnostico_txt.text = ''
+                    root.add_patient(nome_txt, idade_txt, sobrenome_txt, diagnostico_txt)
                     app.root.change_screen('home_screen', \
                         direction='right', \
                         queue_enabled=False)
@@ -220,3 +220,26 @@ Builder.load_string('''
 class NewPatientScreen(Screen):
     def __init__(self, **kw):
         super(NewPatientScreen, self).__init__(**kw)
+
+    def add_patient(self, nome_txt, idade_txt, sobrenome_txt, diagnostico_txt):
+        execute_query("INSERT INTO patients (name, age, surname, diagnostic) VALUES \
+            ('" + nome_txt.text + "',\
+            '" + idade_txt.text + "', \
+            '" + sobrenome_txt.text + "', \
+            '" + diagnostico_txt.text + "')", threaded=True, debug=False)
+
+        App.get_running_app().patients.append(
+            {
+                'name': nome_txt.text,
+                'age': idade_txt.text,
+                'surname': sobrenome_txt.text,
+                'diagnostic': diagnostico_txt.text,
+                'size_hint': [None, None],
+                'size': [dp(300), dp(50)],
+            }
+        )
+
+        nome_txt.text = ''
+        idade_txt.text = ''
+        sobrenome_txt.text = ''
+        diagnostico_txt.text = ''
