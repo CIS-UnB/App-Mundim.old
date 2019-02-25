@@ -26,12 +26,44 @@ Builder.load_string('''
                 top_bar.ids.outros_dados_btn.style = 'mont-body'
             Overlay:
                 size_hint: 1, 1
+            N4ImageButton:
+                source: './assets/img/take_photo_btn.png'
+                center_x: self.parent.center_x
+                y: dp(25)
         Screen:
             id: outros_dados_screen
             name: 'outros_dados_screen'
             on_pre_enter:
                 top_bar.ids.amostragem_btn.style = 'mont-body'
                 top_bar.ids.outros_dados_btn.style = 'mont-body-selected'
+            N4ImageButton:
+                debug: True
+                source: './assets/img/send_data_btn.png'
+            N4TextInput:
+                id: nome_txt
+                hint_text: 'NOME'
+                edit_size: 'medium'
+                pos: int(dp(30)), int(self.parent.height - self.height - dp(10))
+            N4TextInput:
+                id: idade_txt
+                hint_text: 'IDADE'
+                edit_size: 'small'
+                pos: nome_txt.x + nome_txt.width + int(dp(5)), nome_txt.y
+            N4TextInput:
+                id: sobrenome_txt
+                hint_text: 'SOBRENOME'
+                edit_size: 'large'
+                pos: nome_txt.x, int(nome_txt.y - self.height - dp(5))
+            N4TextInput:
+                id: diagnostico_txt
+                hint_text: 'DIAGNOSTICO'
+                edit_size: 'large'
+                pos: nome_txt.x, int(sobrenome_txt.y - self.height - dp(5))
+            N4Image:
+                source: './assets/img/separator_2.png'
+                height: 1
+                center_x: self.parent.center_x
+                y: int(diagnostico_txt.y - self.height - dp(10))
 
 
 <Overlay@RelativeLayout>

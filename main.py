@@ -7,6 +7,7 @@ from kivy.app import App
 from kivy.base import EventLoop
 from kivy.properties import DictProperty
 
+from widgets.n4textinput import N4TextInput
 from widgets.n4label import N4Label
 from widgets.n4button import N4Button
 from widgets.n4image import N4Image
