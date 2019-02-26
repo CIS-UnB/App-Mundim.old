@@ -15,10 +15,15 @@ Builder.load_string('''
     HomeScreenTopBar:
         id: top_bar
         pos: 0, root.height - self.height
+    N4Image:
+        id: exams_label
+        source: './assets/img/patient_exam_label.png'
+        center_x: self.parent.center_x
+        y: top_bar.y - self.height - dp(6)
     ScreenManager:
         id: screen_manager
         size_hint: 1, None
-        height: top_bar.y - dp(6)
+        height: exams_label.y - dp(6)
         Screen:
             id: todos_screen
             name: 'todos_screen'

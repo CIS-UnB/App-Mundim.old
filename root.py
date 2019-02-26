@@ -6,6 +6,7 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.screenmanager import SlideTransition
 from screens.home_screen import HomeScreen
 from screens.new_patient_screen import NewPatientScreen
+from screens.patient_screen import PatientScreen
 from widgets.card_transition import CardTransition
 from kivy.clock import Clock
 from functools import partial
@@ -27,6 +28,9 @@ Builder.load_string('''
         NewPatientScreen:
             id: new_patient_screen
             name: 'new_patient_screen'
+        PatientScreen:
+            id: patient_screen
+            name: 'patient_screen'
 
 ''')
 
