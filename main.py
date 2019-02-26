@@ -5,7 +5,7 @@ sys.dont_write_bytecode = True
 
 from kivy.app import App
 from kivy.base import EventLoop
-from kivy.properties import DictProperty
+from kivy.properties import DictProperty, ListProperty, NumericProperty
 
 from widgets.n4textinput import N4TextInput
 from widgets.n4label import N4Label
@@ -15,6 +15,10 @@ from widgets.n4imagebutton import N4ImageButton, RippledImageButton
 from root import MundimRoot
 from kivy.utils import platform
 from utils import hex_to_rgb, set_statusbar_color
+from server_manager import load_query, execute_query
+from threading import Thread
+from kivy.clock import Clock
+from kivy.metrics import dp
 
 class Mundim(App):
     colors = DictProperty({
@@ -26,9 +30,46 @@ class Mundim(App):
         'debug': hex_to_rgb('FF0000')[:3] + [0.1],
     })
 
+    patients_ammount = NumericProperty(-1)
+    patients = ListProperty([])
+
+    no_prognostic_patients_ammount = NumericProperty(-1)
+    no_prognostic_patients = ListProperty([])
+
+    def load_patients(self, threaded=False, delay=0):
+        def _load_patients():
+            patients = load_query("SELECT * FROM patients")
+            for patient in patients:
+                patient['size_hint'] = [None, None]
+                patient['size'] = dp(300), dp(50)
+
+            self.patients = patients
+            self.patients_ammount = len(self.patients)
+
+        if delay:
+            Clock.schedule_once(
+                (lambda x: self.load_patients(threaded=threaded)), delay
+            )
+            return
+
+        if threaded:
+            Thread(target=_load_patients, args=[]).start()
+        else:
+            _load_patients()
+
+    def on_patients(self, instance, value):
+        no_prognostic_patients = []
+        for patient in value:
+            if patient['diagnostic'] == '':
+                no_prognostic_patients.append(patient)
+        self.no_prognostic_patients = no_prognostic_patients
+        self.no_prognostic_patients_ammount = len(self.no_prognostic_patients)
+
     def on_start(self):
         from kivy.base import EventLoop
         EventLoop.window.bind(on_keyboard=self.hook_keyboard)
+        self.load_patients(threaded=True, delay=1)
+        Clock.schedule_interval(lambda x: self.load_patients(threaded=True), 60)
         if platform == 'android':
             set_statusbar_color('#FFFFFF')
 

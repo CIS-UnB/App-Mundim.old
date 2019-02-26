@@ -4,6 +4,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 
 Builder.load_string('''
+#:import Patient widgets.patient.Patient
 <HomeScreen>
     canvas:
         Color:
@@ -14,10 +15,15 @@ Builder.load_string('''
     HomeScreenTopBar:
         id: top_bar
         pos: 0, root.height - self.height
+    N4Image:
+        id: exams_label
+        source: './assets/img/patient_exam_label.png'
+        center_x: self.parent.center_x
+        y: top_bar.y - self.height - dp(6)
     ScreenManager:
         id: screen_manager
         size_hint: 1, None
-        height: top_bar.y - dp(6)
+        height: exams_label.y - dp(6)
         Screen:
             id: todos_screen
             name: 'todos_screen'
@@ -25,9 +31,22 @@ Builder.load_string('''
                 top_bar.ids.todos_btn.style = 'mont-body-selected'
                 top_bar.ids.sem_prognostico_btn.style = 'mont-body'
             N4Label:
-                text: 'Sem pacientes adicionados.'
+                text: 'Sem pacientes adicionados.' if app.patients_ammount == 0 else \
+                    ('Carregando pacientes...' if app.patients_ammount == -1 else '')
                 y: self.parent.height - self.height - dp(10)
                 center_x: self.parent.center_x
+            RecycleView:
+                size_hint: None, None
+                size: dp(300), self.parent.height - dp(6)
+                viewclass: 'Patient'
+                data: app.patients
+                center_x: self.parent.center_x
+                RecycleGridLayout:
+                    cols: 1
+                    size_hint: 1, None
+                    height: self.minimum_height
+                    spacing: -1
+
         Screen:
             id: sem_prognostico_screen
             name: 'sem_prognostico_screen'
@@ -35,9 +54,21 @@ Builder.load_string('''
                 top_bar.ids.sem_prognostico_btn.style = 'mont-body-selected'
                 top_bar.ids.todos_btn.style = 'mont-body'
             N4Label:
-                text: 'Não tem na outra tela e você acha que vai ter nessa?'
+                text: 'Todos os pacientes já foram diagnosticados.' if app.no_prognostic_patients_ammount == 0 else \
+                    ('Carregando pacientes...' if app.patients_ammount == -1 else '')
                 y: self.parent.height - self.height - dp(10)
                 center_x: self.parent.center_x
+            RecycleView:
+                size_hint: None, None
+                size: dp(300), self.parent.height - dp(6)
+                viewclass: 'Patient'
+                data: app.no_prognostic_patients
+                center_x: self.parent.center_x
+                RecycleGridLayout:
+                    cols: 1
+                    size_hint: 1, None
+                    height: self.minimum_height
+                    spacing: -1
     N4ImageButton:
         source: './assets/img/add_patient_btn.png'
         pos: root.width - self.width - dp(35), dp(25)
