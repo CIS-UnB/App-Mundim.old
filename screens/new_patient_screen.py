@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
+from kivy.uix.camera import Camera
 
 Builder.load_string('''
 <NewPatientScreen>
+    cameraObject: cameraObject
     canvas:
         Color:
             rgba: app.colors['off_white']
@@ -26,10 +28,17 @@ Builder.load_string('''
                 top_bar.ids.outros_dados_btn.style = 'mont-body'
             Overlay:
                 size_hint: 1, 1
+            Camera:
+                id: cameraObject
+                play: True
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                resolution: (640, 480)
             RippledImageButton:
                 source: './assets/img/take_photo_btn.png'
                 center_x: self.parent.center_x
                 y: dp(25)
+                on_press: root.onCameraClick()
         Screen:
             id: outros_dados_screen
             name: 'outros_dados_screen'
@@ -220,3 +229,6 @@ Builder.load_string('''
 class NewPatientScreen(Screen):
     def __init__(self, **kw):
         super(NewPatientScreen, self).__init__(**kw)
+
+    def onCameraClick(self, *args):
+        self.cameraObject.export_to_png('selfie.png')

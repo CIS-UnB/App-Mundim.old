@@ -4,6 +4,7 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.screenmanager import SlideTransition
+from kivy.uix.camera import Camera
 from screens.home_screen import HomeScreen
 from screens.new_patient_screen import NewPatientScreen
 from widgets.card_transition import CardTransition
