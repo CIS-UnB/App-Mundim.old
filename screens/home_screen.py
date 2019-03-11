@@ -19,7 +19,7 @@ Builder.load_string('''
         id: exams_label
         source: './assets/img/patient_exam_label.png'
         center_x: self.parent.center_x
-        y: top_bar.y - self.height - dp(6)
+        y: top_bar.y - self.height - dp(12)
     ScreenManager:
         id: screen_manager
         size_hint: 1, None
@@ -40,7 +40,7 @@ Builder.load_string('''
                 size: dp(300), self.parent.height - dp(6)
                 viewclass: 'Patient'
                 data: app.patients
-                center_x: self.parent.center_x
+                center_x: root.center_x
                 RecycleGridLayout:
                     cols: 1
                     size_hint: 1, None
@@ -57,7 +57,7 @@ Builder.load_string('''
                 text: 'Todos os pacientes já foram diagnosticados.' if app.no_prognostic_patients_ammount == 0 else \
                     ('Carregando pacientes...' if app.patients_ammount == -1 else '')
                 y: self.parent.height - self.height - dp(10)
-                center_x: self.parent.center_x
+                center_x: root.center_x
             RecycleView:
                 size_hint: None, None
                 size: dp(300), self.parent.height - dp(6)

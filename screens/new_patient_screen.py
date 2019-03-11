@@ -7,6 +7,8 @@ from server_manager import execute_query
 from kivy.metrics import dp
 
 Builder.load_string('''
+#:import XCamera kivy.garden.xcamera.XCamera
+
 <NewPatientScreen>
     canvas:
         Color:

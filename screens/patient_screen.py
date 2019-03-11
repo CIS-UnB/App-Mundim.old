@@ -51,7 +51,6 @@ Builder.load_string('''
         center_x: self.parent.center_x
         y: int(diagnostico_txt.y - self.height - dp(10))
     N4ImageButton:
-        debug: True
         source: './assets/img/save_data_btn.png'
         on_press:
             root.save_edited_patient()
@@ -65,7 +64,7 @@ Builder.load_string('''
             size: self.size
             pos: 0, 0
     size_hint: 1, None
-    height: int(dp(42))
+    height: int(dp(47))
     N4ImageButton:
         source: './assets/img/back_btn.png'
         center_y: title.center_y
@@ -76,12 +75,15 @@ Builder.load_string('''
         style: 'mont-title'
         text: root.parent.patient_name + ' ' + root.parent.surname
         pos: dp(55), root.height/2.0 - self.height/2.0
-        debug: True
     RippledImageButton:
         ripple_rad_default: 0
         x: root.width - self.width
         center_y: title.center_y
         source: './assets/img/dots.png'
+    N4Image:
+        source: './assets/img/separator_2.png'
+        size_hint_x: 1
+        height: 1
 
 ''')
 

@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = Projeto
+title = Projeto2
 
 # (str) Package name
-package.name = mundimapp
+package.name = mundimapp2
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.cis
@@ -36,14 +36,14 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python2, openssl, kivy, requests
+requirements = python2, opencv, openssl, kivy, requests
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
 # (list) Garden requirements
-#garden_requirements =
+garden_requirements = xcamera
 
 # (str) Presplash of the application
 presplash.filename = ./assets/img/icon-1024.png
@@ -85,7 +85,7 @@ fullscreen = 0
 android.presplash_color = #FFFFFF
 
 # (list) Permissions
-android.permissions = INTERNET
+android.permissions = CAMERA
 
 # (int) Android API to use
 #android.api = 19
@@ -159,7 +159,7 @@ android.permissions = INTERNET
 #android.add_activites = com.example.ExampleActivity
 
 # (str) python-for-android branch to use, defaults to master
-#p4a.branch = master
+p4a.branch = master
 
 # (str) OUYA Console category. Should be one of GAME or APP
 # If you leave this blank, OUYA support will not be enabled
