@@ -3,18 +3,14 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
-<<<<<<< HEAD
-from kivy.uix.camera import Camera
-=======
 from server_manager import execute_query
 from kivy.metrics import dp
->>>>>>> 67080898e9598dcda604f3f9bc2fe1f47f630f9d
+from kivy.properties import ObjectProperty
 
 Builder.load_string('''
-#:import XCamera kivy.garden.xcamera.XCamera
 
 <NewPatientScreen>
-    cameraObject: cameraObject
+    camera_object: camera_object
     canvas:
         Color:
             rgba: app.colors['off_white']
@@ -37,16 +33,15 @@ Builder.load_string('''
             Overlay:
                 size_hint: 1, 1
             Camera:
-                id: cameraObject
+                id: camera_object
                 play: True
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                resolution: (640, 480)
             RippledImageButton:
                 source: './assets/img/take_photo_btn.png'
                 center_x: self.parent.center_x
                 y: dp(25)
-                on_press: root.onCameraClick()
+                on_press: root.on_camera_click()
         Screen:
             id: outros_dados_screen
             name: 'outros_dados_screen'
@@ -232,12 +227,14 @@ Builder.load_string('''
 ''')
 
 class NewPatientScreen(Screen):
+    camera_object = ObjectProperty(None, allonone=True)
+
     def __init__(self, **kw):
         super(NewPatientScreen, self).__init__(**kw)
 
-    def onCameraClick(self, *args):
-        self.cameraObject.export_to_png('selfie.png')
-        
+    def on_camera_click(self, *args):
+        self.camera.export_to_png('selfie.png')
+
     def add_patient(self, nome_txt, idade_txt, sobrenome_txt, diagnostico_txt):
         execute_query("INSERT INTO patients (name, age, surname, diagnostic) VALUES \
             ('" + nome_txt.text + "',\
