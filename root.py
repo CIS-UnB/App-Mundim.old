@@ -41,7 +41,7 @@ class MundimRoot(RelativeLayout):
     def __init__(self, **kw):
         super(MundimRoot, self).__init__(**kw)
 
-    def change_screen(self, target, delay=0, direction='left', transition='card', queue_enabled=True, screen_manager=None):
+    def change_screen(self, target, delay=0, direction='left', transition='slide', queue_enabled=True, screen_manager=None):
         if not screen_manager:
             screen_manager = self.ids.screen_manager
 
@@ -56,9 +56,6 @@ class MundimRoot(RelativeLayout):
                 ), delay
             )
             return
-
-        if target == screen_manager.current:
-            self.undo()
 
         self.last_transition = time.time()
         if queue_enabled:
@@ -75,9 +72,9 @@ class MundimRoot(RelativeLayout):
                 )
             )
 
-        screen_transition = SlideTransition(direction=direction)
+        screen_transition = CardTransition(direction=direction)
         if transition == 'slide':
-            screen_transition = SlideTransition(direction=direction)
+            screen_transition = SlideTransition(direction=direction, duration=0.6)
 
         screen_manager.transition = screen_transition
         screen_manager.current = target
