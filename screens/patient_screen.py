@@ -18,31 +18,17 @@ Builder.load_string('''
         pos: 0, root.height - self.height
 
     N4TextInput:
-        id: nome_txt
-        hint_text: 'NOME'
-        edit_size: 'medium'
+        id: chart_id_txt
+        hint_text: 'ID'
+        edit_size: 'large'
         pos: int(dp(30)), int(top_bar.y - self.height - dp(10))
         on_text:
-            root.patient_name = self.text
-    N4TextInput:
-        id: idade_txt
-        hint_text: 'IDADE'
-        edit_size: 'small'
-        pos: nome_txt.x + nome_txt.width + int(dp(5)), nome_txt.y
-        on_text:
-            root.age = self.text
-    N4TextInput:
-        id: sobrenome_txt
-        hint_text: 'SOBRENOME'
-        edit_size: 'large'
-        pos: nome_txt.x, int(nome_txt.y - self.height - dp(5))
-        on_text:
-            root.surname = self.text
+            root.chart_id = self.text
     N4TextInput:
         id: diagnostico_txt
         hint_text: 'DIAGNOSTICO'
         edit_size: 'large'
-        pos: nome_txt.x, int(sobrenome_txt.y - self.height - dp(5))
+        pos: chart_id_txt.x, int(chart_id_txt.y - self.height - dp(5))
         on_text:
             root.diagnostic = self.text
     N4Image:
@@ -73,7 +59,7 @@ Builder.load_string('''
     N4Label:
         id: title
         style: 'mont-title'
-        text: root.parent.patient_name + ' ' + root.parent.surname
+        text: 'Paciente: ' + root.parent.chart_id
         pos: dp(55), root.height/2.0 - self.height/2.0
     RippledImageButton:
         ripple_rad_default: 0
@@ -89,6 +75,7 @@ Builder.load_string('''
 
 class PatientScreen(Screen):
     patient_name = StringProperty('')
+    chart_id = StringProperty('')
     age = StringProperty('')
     surname = StringProperty('')
     diagnostic = StringProperty('')
@@ -104,6 +91,7 @@ class PatientScreen(Screen):
         for index, patient in enumerate(patients):
             print patients[index]['id'] == self.id
             if patients[index]['id'] == self.id:
+                patients[index]['chart_id'] = self.chart_id
                 patients[index]['name'] = self.patient_name
                 patients[index]['age'] = self.age
                 patients[index]['surname'] = self.surname
@@ -113,9 +101,10 @@ class PatientScreen(Screen):
 
         execute_query(u" \
             UPDATE patients SET \
+            chart_id = '{}', \
             name = '{}', \
             age = '{}', \
             surname = '{}', \
             diagnostic = '{}' \
             WHERE id = '{}'; \
-            ".format(self.patient_name, self.age, self.surname, self.diagnostic, self.id), threaded=True)
+            ".format(self.chart_id, self.patient_name, self.age, self.surname, self.diagnostic, self.id), threaded=True)

@@ -31,7 +31,7 @@ Builder.load_string('''
             './assets/img/diagnostic_unsent.png'
         pos: dp(11), root.height / 2.0 - self.height / 2.0
     N4Label:
-        text: root.name + ' ' + root.surname
+        text: root.chart_id
         pos: dp(45), root.height / 2.0 - self.height / 2.0
     N4Label:
         text: root.creation_hour
@@ -45,6 +45,7 @@ Builder.load_string('''
 class Patient(RelativeLayout):
     debug = BooleanProperty(False)
     name = StringProperty('')
+    chart_id = StringProperty('')
     age = StringProperty('')
     surname = StringProperty('')
     diagnostic = StringProperty('')
@@ -62,9 +63,7 @@ class Patient(RelativeLayout):
         patient_screen = app.root.ids.patient_screen
         patient_screen.id = self.id
 
-        patient_screen.ids.nome_txt.text = self.name
-        patient_screen.ids.idade_txt.text = self.age
-        patient_screen.ids.sobrenome_txt.text = self.surname
+        patient_screen.ids.chart_id_txt.text = self.chart_id
         patient_screen.ids.diagnostico_txt.text = self.diagnostic
         app.root.change_screen('patient_screen')
 

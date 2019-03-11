@@ -52,30 +52,23 @@ Builder.load_string('''
                 debug: True
                 source: './assets/img/send_data_btn.png'
                 on_press:
-                    root.add_patient(nome_txt, idade_txt, sobrenome_txt, diagnostico_txt)
+                    root.add_patient(chart_id_txt, diagnostico_txt)
                     app.root.change_screen('home_screen', \
                         direction='right', \
                         queue_enabled=False)
+
             N4TextInput:
-                id: nome_txt
-                hint_text: 'NOME'
-                edit_size: 'medium'
-                pos: int(dp(30)), int(self.parent.height - self.height - dp(10))
-            N4TextInput:
-                id: idade_txt
-                hint_text: 'IDADE'
-                edit_size: 'small'
-                pos: nome_txt.x + nome_txt.width + int(dp(5)), nome_txt.y
-            N4TextInput:
-                id: sobrenome_txt
-                hint_text: 'SOBRENOME'
+                id: chart_id_txt
+                hint_text: 'ID'
                 edit_size: 'large'
-                pos: nome_txt.x, int(nome_txt.y - self.height - dp(5))
+                pos: int(dp(30)), int(top_bar.y - self.height - dp(10))
+                on_text:
+                    root.chart_id = self.text
             N4TextInput:
                 id: diagnostico_txt
                 hint_text: 'DIAGNOSTICO'
                 edit_size: 'large'
-                pos: nome_txt.x, int(sobrenome_txt.y - self.height - dp(5))
+                pos: chart_id_txt.x, int(chart_id_txt.y - self.height - dp(5))
             N4Image:
                 source: './assets/img/separator_2.png'
                 height: 1
@@ -235,25 +228,22 @@ class NewPatientScreen(Screen):
     def on_camera_click(self, *args):
         self.camera.export_to_png('selfie.png')
 
-    def add_patient(self, nome_txt, idade_txt, sobrenome_txt, diagnostico_txt):
-        execute_query("INSERT INTO patients (name, age, surname, diagnostic) VALUES \
-            ('" + nome_txt.text + "',\
-            '" + idade_txt.text + "', \
-            '" + sobrenome_txt.text + "', \
+    def add_patient(self, chart_id_txt, diagnostico_txt):
+        execute_query("INSERT INTO patients (chart_id, diagnostic) VALUES \
+            ('" + chart_id_txt.text + "',\
             '" + diagnostico_txt.text + "')", threaded=True, debug=False)
 
         App.get_running_app().patients.append(
             {
-                'name': nome_txt.text,
-                'age': idade_txt.text,
-                'surname': sobrenome_txt.text,
+                'chart_id': chart_id_txt.text,
+                'name': '',
+                'age': '',
+                'surname': '',
                 'diagnostic': diagnostico_txt.text,
                 'size_hint': [None, None],
                 'size': [dp(300), dp(50)],
             }
         )
 
-        nome_txt.text = ''
-        idade_txt.text = ''
-        sobrenome_txt.text = ''
+        chart_id_txt.text = ''
         diagnostico_txt.text = ''
