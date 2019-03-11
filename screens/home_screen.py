@@ -18,7 +18,7 @@ Builder.load_string('''
     N4Image:
         id: exams_label
         source: './assets/img/patient_exam_label.png'
-        center_x: self.parent.center_x
+        x: (root.width - self.width)/2
         y: top_bar.y - self.height - dp(12)
     ScreenManager:
         id: screen_manager
@@ -40,7 +40,7 @@ Builder.load_string('''
                 size: dp(300), self.parent.height - dp(6)
                 viewclass: 'Patient'
                 data: app.patients
-                center_x: root.center_x
+                x: (root.width - self.width)/2
                 RecycleGridLayout:
                     cols: 1
                     size_hint: 1, None
@@ -63,7 +63,7 @@ Builder.load_string('''
                 size: dp(300), self.parent.height - dp(6)
                 viewclass: 'Patient'
                 data: app.no_prognostic_patients
-                center_x: self.parent.center_x
+                x: (root.width - self.width)/2
                 RecycleGridLayout:
                     cols: 1
                     size_hint: 1, None

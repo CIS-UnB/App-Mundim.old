@@ -75,7 +75,7 @@ class MundimRoot(RelativeLayout):
                 )
             )
 
-        screen_transition = CardTransition(direction=direction)
+        screen_transition = SlideTransition(direction=direction)
         if transition == 'slide':
             screen_transition = SlideTransition(direction=direction)
 
