@@ -1,3 +1,6 @@
 ./buildozer/
 bin/
 ./*.ttf
+*.ttf
+*.pyc
+*.png
