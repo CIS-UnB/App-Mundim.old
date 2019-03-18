@@ -43,7 +43,7 @@ requirements = python2, opencv, openssl, kivy, requests
 # requirements.source.kivy = ../../kivy
 
 # (list) Garden requirements
-garden_requirements = xcamera
+#garden_requirements = xcamera
 
 # (str) Presplash of the application
 presplash.filename = ./assets/img/icon-1024.png

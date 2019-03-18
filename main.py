@@ -12,7 +12,9 @@ from widgets.n4label import N4Label
 from widgets.n4button import N4Button, RippledN4Button
 from widgets.n4image import N4Image
 from widgets.n4imagebutton import N4ImageButton, RippledImageButton
+from widgets.xcamera import XCamera
 from root import MundimRoot
+
 from kivy.utils import platform
 from utils import hex_to_rgb, set_statusbar_color
 from server_manager import load_query, execute_query
@@ -60,7 +62,7 @@ class Mundim(App):
     def on_patients(self, instance, value):
         no_prognostic_patients = []
         for patient in value:
-            if patient['diagnostic'] == '':
+            if patient['initial_diagnostic'] == '':
                 no_prognostic_patients.append(patient)
         self.no_prognostic_patients = no_prognostic_patients
         self.no_prognostic_patients_ammount = len(self.no_prognostic_patients)
@@ -68,10 +70,21 @@ class Mundim(App):
     def on_start(self):
         from kivy.base import EventLoop
         EventLoop.window.bind(on_keyboard=self.hook_keyboard)
+
         self.load_patients(threaded=True, delay=1)
         Clock.schedule_interval(lambda x: self.load_patients(threaded=True), 60)
         if platform == 'android':
             set_statusbar_color('#FFFFFF')
+
+    @staticmethod
+    def check_request_permission():
+        if platform != "android":
+            return
+        from android.permissions import (
+            Permission, request_permission, check_permission)
+        permission = Permission.CAMERA
+        if not check_permission(permission):
+            request_permission(permission)
 
     def hook_keyboard(self, window, key, *largs):
         if key == 27:
@@ -79,6 +92,8 @@ class Mundim(App):
             return True
 
     def build(self):
+        self.check_request_permission()
+
         self.root = MundimRoot()
         self.root.app = self
         return self.root

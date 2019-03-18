@@ -10,6 +10,7 @@ from screens.new_patient_screen import NewPatientScreen
 from screens.patient_screen import PatientScreen
 from widgets.card_transition import CardTransition
 from kivy.clock import Clock
+from kivy.properties import NumericProperty
 from functools import partial
 import time
 Builder.load_string('''

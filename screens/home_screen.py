@@ -57,7 +57,7 @@ Builder.load_string('''
                 text: 'Todos os pacientes já foram diagnosticados.' if app.no_prognostic_patients_ammount == 0 else \
                     ('Carregando pacientes...' if app.patients_ammount == -1 else '')
                 y: self.parent.height - self.height - dp(10)
-                center_x: root.center_x
+                size_hint_x: 1
             RecycleView:
                 size_hint: None, None
                 size: dp(300), self.parent.height - dp(6)

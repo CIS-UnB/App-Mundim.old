@@ -5,21 +5,20 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from server_manager import execute_query
 from kivy.metrics import dp
-from kivy.properties import ObjectProperty
+from kivy.properties import NumericProperty
 
 Builder.load_string('''
-
 <NewPatientScreen>
-    camera_object: camera_object
     canvas:
         Color:
             rgba: app.colors['off_white']
         Rectangle:
             size: self.size
             pos: 0, 0
-    NewPatientScreenTopBar:
-        id: top_bar
-        pos: 0, root.height - self.height
+    on_enter:
+        camera_object.play = True
+    on_leave:
+        camera_object.play = False
     ScreenManager:
         id: screen_manager
         size_hint: 1, None
@@ -30,24 +29,42 @@ Builder.load_string('''
             on_pre_enter:
                 top_bar.ids.amostragem_btn.style = 'mont-body-selected'
                 top_bar.ids.outros_dados_btn.style = 'mont-body'
+            XCamera:
+                id: camera_object
+                size_hint: None, None
+                resolution: 1, 1
+                size: root.height * self.resolution[0]/self.resolution[1] * root.camera_zoom, root.height * root.camera_zoom
+                keep_ratio: False
+                allow_stretch: True
+                canvas.before:
+                    PushMatrix
+                    Rotate:
+                        angle: -90
+                        origin: root.center
+                canvas.after:
+                    PopMatrix
+                pos: (root.width - self.width)/2.0, (root.height - self.height)/2.0
             Overlay:
                 size_hint: 1, 1
-            Camera:
-                id: camera_object
-                play: True
-                center_x: self.parent.center_x
-                center_y: self.parent.center_y
             RippledImageButton:
                 source: './assets/img/take_photo_btn.png'
                 center_x: self.parent.center_x
                 y: dp(25)
-                on_press: root.on_camera_click()
+                on_press: camera_object.shoot('temp.jpg')
         Screen:
             id: outros_dados_screen
             name: 'outros_dados_screen'
             on_pre_enter:
                 top_bar.ids.amostragem_btn.style = 'mont-body'
                 top_bar.ids.outros_dados_btn.style = 'mont-body-selected'
+            Widget:
+                size_hint: 1, 1
+                canvas:
+                    Color:
+                        rgba: app.colors['off_white']
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
             N4ImageButton:
                 debug: True
                 source: './assets/img/send_data_btn.png'
@@ -74,6 +91,9 @@ Builder.load_string('''
                 height: 1
                 center_x: self.parent.center_x
                 y: int(diagnostico_txt.y - self.height - dp(10))
+    NewPatientScreenTopBar:
+        id: top_bar
+        pos: 0, root.height - self.height
 
 
 <Overlay@RelativeLayout>
@@ -220,26 +240,29 @@ Builder.load_string('''
 ''')
 
 class NewPatientScreen(Screen):
-    camera_object = ObjectProperty(None, allonone=True)
-
+    camera_zoom = NumericProperty(2)
+    fixed_resolution = False
     def __init__(self, **kw):
         super(NewPatientScreen, self).__init__(**kw)
 
+    def update_resolution(self):
+        if not self.fixed_resolution:
+            self.fixed_resolution = True
+            self.ids.camera_object.resolution = (3840, 2160)
+
     def on_camera_click(self, *args):
-        self.camera.export_to_png('selfie.png')
+        pass
 
     def add_patient(self, chart_id_txt, diagnostico_txt):
-        execute_query("INSERT INTO patients (chart_id, diagnostic) VALUES \
+        execute_query("INSERT INTO patients (chart_id, initial_diagnostic) VALUES \
             ('" + chart_id_txt.text + "',\
             '" + diagnostico_txt.text + "')", threaded=True, debug=False)
 
         App.get_running_app().patients.append(
             {
                 'chart_id': chart_id_txt.text,
-                'name': '',
                 'age': '',
-                'surname': '',
-                'diagnostic': diagnostico_txt.text,
+                'initial_diagnostic': diagnostico_txt.text,
                 'size_hint': [None, None],
                 'size': [dp(300), dp(50)],
             }

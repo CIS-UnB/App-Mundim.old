@@ -27,7 +27,7 @@ Builder.load_string('''
         y: 0
     N4Image:
         id: diagnostic_img
-        source: './assets/img/diagnostic_sent.png' if root.diagnostic != '' else \
+        source: './assets/img/diagnostic_sent.png' if root.initial_diagnostic != '' else \
             './assets/img/diagnostic_unsent.png'
         pos: dp(11), root.height / 2.0 - self.height / 2.0
     N4Label:
@@ -44,11 +44,9 @@ Builder.load_string('''
 
 class Patient(RelativeLayout):
     debug = BooleanProperty(False)
-    name = StringProperty('')
     chart_id = StringProperty('')
     age = StringProperty('')
-    surname = StringProperty('')
-    diagnostic = StringProperty('')
+    initial_diagnostic = StringProperty('')
     date_of_creation = StringProperty('')
     creation_hour = StringProperty('')
     id = StringProperty('')
@@ -64,7 +62,7 @@ class Patient(RelativeLayout):
         patient_screen.id = self.id
 
         patient_screen.ids.chart_id_txt.text = self.chart_id
-        patient_screen.ids.diagnostico_txt.text = self.diagnostic
+        patient_screen.ids.diagnostico_txt.text = self.initial_diagnostic
         app.root.change_screen('patient_screen')
 
     def on_date_of_creation(self, instance, value):

@@ -30,7 +30,7 @@ Builder.load_string('''
         edit_size: 'large'
         pos: chart_id_txt.x, int(chart_id_txt.y - self.height - dp(5))
         on_text:
-            root.diagnostic = self.text
+            root.initial_diagnostic = self.text
     N4Image:
         source: './assets/img/separator_2.png'
         height: 1
@@ -74,17 +74,14 @@ Builder.load_string('''
 ''')
 
 class PatientScreen(Screen):
-    patient_name = StringProperty('')
     chart_id = StringProperty('')
     age = StringProperty('')
-    surname = StringProperty('')
-    diagnostic = StringProperty('')
-    id = StringProperty('')
+    initial_diagnostic = StringProperty('')
+    id = StringProperty('') # database id
     def __init__(self, **kw):
         super(PatientScreen, self).__init__(**kw)
 
     def save_edited_patient(self):
-        print self.patient_name, self.id
         app = App.get_running_app()
         patients = app.patients[:]
 
@@ -92,19 +89,15 @@ class PatientScreen(Screen):
             print patients[index]['id'] == self.id
             if patients[index]['id'] == self.id:
                 patients[index]['chart_id'] = self.chart_id
-                patients[index]['name'] = self.patient_name
                 patients[index]['age'] = self.age
-                patients[index]['surname'] = self.surname
-                patients[index]['diagnostic'] = self.diagnostic
+                patients[index]['initial_diagnostic'] = self.diagnostic
         app.patients = []
         app.patients = patients
 
         execute_query(u" \
             UPDATE patients SET \
             chart_id = '{}', \
-            name = '{}', \
             age = '{}', \
-            surname = '{}', \
-            diagnostic = '{}' \
+            initial_diagnostic = '{}' \
             WHERE id = '{}'; \
-            ".format(self.chart_id, self.patient_name, self.age, self.surname, self.diagnostic, self.id), threaded=True)
+            ".format(self.chart_id, self.age, self.initial_diagnostic, self.id), threaded=True)
