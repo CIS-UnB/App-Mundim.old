@@ -44,12 +44,17 @@ Builder.load_string('''
 
 class Patient(RelativeLayout):
     debug = BooleanProperty(False)
-    chart_id = StringProperty('')
-    age = StringProperty('')
-    initial_diagnostic = StringProperty('')
     date_of_creation = StringProperty('')
     creation_hour = StringProperty('')
+
+    # database info
     id = StringProperty('')
+    chart_id = StringProperty('')
+    age = StringProperty('')
+    sex = StringProperty('')
+    anatomic_area = StringProperty('')
+    initial_diagnostic = StringProperty('')
+    biopsy_diagnostic = StringProperty('')
 
     def __init__(self, **kw):
         super(Patient, self).__init__(**kw)
@@ -62,7 +67,11 @@ class Patient(RelativeLayout):
         patient_screen.id = self.id
 
         patient_screen.ids.chart_id_txt.text = self.chart_id
-        patient_screen.ids.diagnostico_txt.text = self.initial_diagnostic
+        patient_screen.ids.age_txt.text = self.age
+        patient_screen.ids.sex_txt.text = self.sex
+        patient_screen.ids.anatomic_area_txt.text = self.anatomic_area
+        patient_screen.ids.initial_diagnostic_txt.text = self.initial_diagnostic
+        patient_screen.ids.biopsy_diagnostic_txt.text = self.biopsy_diagnostic
         app.root.change_screen('patient_screen')
 
     def on_date_of_creation(self, instance, value):

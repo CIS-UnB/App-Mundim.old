@@ -3,7 +3,7 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
-from server_manager import execute_query
+from server_manager import execute_query, load_query
 from kivy.metrics import dp
 from kivy.properties import NumericProperty
 
@@ -29,7 +29,7 @@ Builder.load_string('''
             on_pre_enter:
                 top_bar.ids.amostragem_btn.style = 'mont-body-selected'
                 top_bar.ids.outros_dados_btn.style = 'mont-body'
-            XCamera:
+            Widget:
                 id: camera_object
                 size_hint: None, None
                 resolution: 1, 1
@@ -69,7 +69,7 @@ Builder.load_string('''
                 debug: True
                 source: './assets/img/send_data_btn.png'
                 on_press:
-                    root.add_patient(chart_id_txt, diagnostico_txt)
+                    root.add_patient(chart_id_txt, age_txt, sex_txt, anatomic_area_txt, initial_diagnostic_txt, biopsy_diagnostic_txt)
                     app.root.change_screen('home_screen', \
                         direction='right', \
                         queue_enabled=False)
@@ -77,20 +77,38 @@ Builder.load_string('''
             N4TextInput:
                 id: chart_id_txt
                 hint_text: 'ID'
-                edit_size: 'large'
+                edit_size: 'small'
                 pos: int(dp(30)), int(top_bar.y - self.height - dp(10))
-                on_text:
-                    root.chart_id = self.text
             N4TextInput:
-                id: diagnostico_txt
-                hint_text: 'DIAGNOSTICO'
+                id: age_txt
+                hint_text: 'IDADE'
+                edit_size: 'small'
+                pos: chart_id_txt.x + chart_id_txt.width, chart_id_txt.y
+            N4TextInput:
+                id: sex_txt
+                hint_text: 'SEXO (M/F)'
+                edit_size: 'small'
+                pos: age_txt.x + age_txt.width, age_txt.y
+            N4TextInput:
+                id: anatomic_area_txt
+                hint_text: 'AREA ANATOMICA'
                 edit_size: 'large'
                 pos: chart_id_txt.x, int(chart_id_txt.y - self.height - dp(5))
+            N4TextInput:
+                id: initial_diagnostic_txt
+                hint_text: 'DIAGNOSTICO'
+                edit_size: 'large'
+                pos: anatomic_area_txt.x, int(anatomic_area_txt.y - self.height - dp(5))
+            N4TextInput:
+                id: biopsy_diagnostic_txt
+                hint_text: 'BIOPSIA'
+                edit_size: 'large'
+                pos: initial_diagnostic_txt.x, int(initial_diagnostic_txt.y - self.height - dp(5))
             N4Image:
                 source: './assets/img/separator_2.png'
                 height: 1
                 center_x: self.parent.center_x
-                y: int(diagnostico_txt.y - self.height - dp(10))
+                y: int(biopsy_diagnostic_txt.y - self.height - dp(10))
     NewPatientScreenTopBar:
         id: top_bar
         pos: 0, root.height - self.height
@@ -253,20 +271,32 @@ class NewPatientScreen(Screen):
     def on_camera_click(self, *args):
         pass
 
-    def add_patient(self, chart_id_txt, diagnostico_txt):
-        execute_query("INSERT INTO patients (chart_id, initial_diagnostic) VALUES \
-            ('" + chart_id_txt.text + "',\
-            '" + diagnostico_txt.text + "')", threaded=True, debug=False)
 
-        App.get_running_app().patients.append(
+    def add_patient(self, chart_id_txt, age_txt, sex_txt, anatomic_area_txt, initial_diagnostic_txt, biopsy_diagnostic_txt):
+        id = load_query(u" \
+            INSERT INTO patients (chart_id, age, sex, anatomic_area, initial_diagnostic, biopsy_diagnostic) VALUES \
+            ('{}', '{}', '{}', '{}', '{}', '{}') \
+            ".format(chart_id_txt.text, age_txt.text, sex_txt.text, anatomic_area_txt.text, initial_diagnostic_txt.text, biopsy_diagnostic_txt.text, ))
+
+        app = App.get_running_app()
+        app.patients_ammount += 1
+        app.patients.append(
             {
+                'id': str(id),
                 'chart_id': chart_id_txt.text,
-                'age': '',
-                'initial_diagnostic': diagnostico_txt.text,
+                'age': age_txt.text,
+                'sex': sex_txt.text,
+                'anatomic_area': anatomic_area_txt.text,
+                'initial_diagnostic': initial_diagnostic_txt.text,
+                'biopsy_diagnostic': biopsy_diagnostic_txt.text,
                 'size_hint': [None, None],
                 'size': [dp(300), dp(50)],
             }
         )
 
         chart_id_txt.text = ''
-        diagnostico_txt.text = ''
+        age_txt.text = ''
+        sex_txt.text = ''
+        anatomic_area_txt.text = ''
+        initial_diagnostic_txt.text = ''
+        biopsy_diagnostic_txt.text = ''

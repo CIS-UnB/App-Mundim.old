@@ -62,7 +62,7 @@ class Mundim(App):
     def on_patients(self, instance, value):
         no_prognostic_patients = []
         for patient in value:
-            if patient['initial_diagnostic'] == '':
+            if patient['biopsy_diagnostic'] == '':
                 no_prognostic_patients.append(patient)
         self.no_prognostic_patients = no_prognostic_patients
         self.no_prognostic_patients_ammount = len(self.no_prognostic_patients)

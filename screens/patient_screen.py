@@ -20,22 +20,50 @@ Builder.load_string('''
     N4TextInput:
         id: chart_id_txt
         hint_text: 'ID'
-        edit_size: 'large'
+        edit_size: 'small'
         pos: int(dp(30)), int(top_bar.y - self.height - dp(10))
         on_text:
             root.chart_id = self.text
     N4TextInput:
-        id: diagnostico_txt
-        hint_text: 'DIAGNOSTICO'
+        id: age_txt
+        hint_text: 'IDADE'
+        edit_size: 'small'
+        pos: chart_id_txt.x + chart_id_txt.width, chart_id_txt.y
+        on_text:
+            root.age = self.text
+    N4TextInput:
+        id: sex_txt
+        hint_text: 'SEXO (M/F)'
+        edit_size: 'small'
+        pos: age_txt.x + age_txt.width, age_txt.y
+        on_text:
+            root.sex = self.text
+    N4TextInput:
+        id: anatomic_area_txt
+        hint_text: 'AREA ANATOMICA'
         edit_size: 'large'
         pos: chart_id_txt.x, int(chart_id_txt.y - self.height - dp(5))
         on_text:
+            root.anatomic_area = self.text
+    N4TextInput:
+        id: initial_diagnostic_txt
+        hint_text: 'DIAGNOSTICO'
+        edit_size: 'large'
+        pos: anatomic_area_txt.x, int(anatomic_area_txt.y - self.height - dp(5))
+        on_text:
             root.initial_diagnostic = self.text
+    N4TextInput:
+        id: biopsy_diagnostic_txt
+        hint_text: 'BIOPSIA'
+        edit_size: 'large'
+        pos: initial_diagnostic_txt.x, int(initial_diagnostic_txt.y - self.height - dp(5))
+        on_text:
+            root.biopsy_diagnostic = self.text
     N4Image:
         source: './assets/img/separator_2.png'
         height: 1
         center_x: self.parent.center_x
-        y: int(diagnostico_txt.y - self.height - dp(10))
+        y: int(biopsy_diagnostic_txt.y - self.height - dp(10))
     N4ImageButton:
         source: './assets/img/save_data_btn.png'
         on_press:
@@ -74,10 +102,15 @@ Builder.load_string('''
 ''')
 
 class PatientScreen(Screen):
+    # database info
+    id = StringProperty('')
     chart_id = StringProperty('')
     age = StringProperty('')
+    sex = StringProperty('')
+    anatomic_area = StringProperty('')
     initial_diagnostic = StringProperty('')
-    id = StringProperty('') # database id
+    biopsy_diagnostic = StringProperty('')
+
     def __init__(self, **kw):
         super(PatientScreen, self).__init__(**kw)
 
@@ -86,11 +119,13 @@ class PatientScreen(Screen):
         patients = app.patients[:]
 
         for index, patient in enumerate(patients):
-            print patients[index]['id'] == self.id
             if patients[index]['id'] == self.id:
                 patients[index]['chart_id'] = self.chart_id
                 patients[index]['age'] = self.age
-                patients[index]['initial_diagnostic'] = self.diagnostic
+                patients[index]['sex'] = self.sex
+                patients[index]['anatomic_area'] = self.anatomic_area
+                patients[index]['initial_diagnostic'] = self.initial_diagnostic
+                patients[index]['biopsy_diagnostic'] = self.biopsy_diagnostic
         app.patients = []
         app.patients = patients
 
@@ -98,6 +133,9 @@ class PatientScreen(Screen):
             UPDATE patients SET \
             chart_id = '{}', \
             age = '{}', \
-            initial_diagnostic = '{}' \
+            sex = '{}', \
+            anatomic_area = '{}', \
+            initial_diagnostic = '{}', \
+            biopsy_diagnostic = '{}' \
             WHERE id = '{}'; \
-            ".format(self.chart_id, self.age, self.initial_diagnostic, self.id), threaded=True)
+            ".format(self.chart_id, self.age, self.sex, self.anatomic_area, self.initial_diagnostic, self.biopsy_diagnostic, self.id), debug=True)
